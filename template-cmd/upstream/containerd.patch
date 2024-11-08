@@ -1,0 +1,164 @@
+diff --git a/content/local/store.go b/content/local/store.go
+index baae3565b..734dfced7 100644
+--- a/content/local/store.go
++++ b/content/local/store.go
+@@ -113,6 +113,10 @@ func (s *store) Info(ctx context.Context, dgst digest.Digest) (content.Info, err
+ 	return s.info(dgst, fi, labels), nil
+ }
+
++func getATime(fi os.FileInfo) time.Time {
++	return time.Time{}
++}
++
+ func (s *store) info(dgst digest.Digest, fi os.FileInfo, labels map[string]string) content.Info {
+ 	return content.Info{
+ 		Digest:    dgst,
+diff --git a/content/local/store_bsd.go b/content/local/store_bsd.go
+deleted file mode 100644
+index 7dcc19232..000000000
+--- a/content/local/store_bsd.go
++++ /dev/null
+@@ -1,33 +0,0 @@
+-//go:build darwin || freebsd || netbsd
+-
+-/*
+-   Copyright The containerd Authors.
+-
+-   Licensed under the Apache License, Version 2.0 (the "License");
+-   you may not use this file except in compliance with the License.
+-   You may obtain a copy of the License at
+-
+-       http://www.apache.org/licenses/LICENSE-2.0
+-
+-   Unless required by applicable law or agreed to in writing, software
+-   distributed under the License is distributed on an "AS IS" BASIS,
+-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-   See the License for the specific language governing permissions and
+-   limitations under the License.
+-*/
+-
+-package local
+-
+-import (
+-	"os"
+-	"syscall"
+-	"time"
+-)
+-
+-func getATime(fi os.FileInfo) time.Time {
+-	if st, ok := fi.Sys().(*syscall.Stat_t); ok {
+-		return time.Unix(st.Atimespec.Unix())
+-	}
+-
+-	return fi.ModTime()
+-}
+diff --git a/content/local/store_openbsd.go b/content/local/store_openbsd.go
+deleted file mode 100644
+index 45dfa9997..000000000
+--- a/content/local/store_openbsd.go
++++ /dev/null
+@@ -1,33 +0,0 @@
+-//go:build openbsd
+-
+-/*
+-   Copyright The containerd Authors.
+-
+-   Licensed under the Apache License, Version 2.0 (the "License");
+-   you may not use this file except in compliance with the License.
+-   You may obtain a copy of the License at
+-
+-       http://www.apache.org/licenses/LICENSE-2.0
+-
+-   Unless required by applicable law or agreed to in writing, software
+-   distributed under the License is distributed on an "AS IS" BASIS,
+-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-   See the License for the specific language governing permissions and
+-   limitations under the License.
+-*/
+-
+-package local
+-
+-import (
+-	"os"
+-	"syscall"
+-	"time"
+-)
+-
+-func getATime(fi os.FileInfo) time.Time {
+-	if st, ok := fi.Sys().(*syscall.Stat_t); ok {
+-		return time.Unix(st.Atim.Unix())
+-	}
+-
+-	return fi.ModTime()
+-}
+diff --git a/content/local/store_unix.go b/content/local/store_unix.go
+deleted file mode 100644
+index cb01c91c7..000000000
+--- a/content/local/store_unix.go
++++ /dev/null
+@@ -1,33 +0,0 @@
+-//go:build linux || solaris
+-
+-/*
+-   Copyright The containerd Authors.
+-
+-   Licensed under the Apache License, Version 2.0 (the "License");
+-   you may not use this file except in compliance with the License.
+-   You may obtain a copy of the License at
+-
+-       http://www.apache.org/licenses/LICENSE-2.0
+-
+-   Unless required by applicable law or agreed to in writing, software
+-   distributed under the License is distributed on an "AS IS" BASIS,
+-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-   See the License for the specific language governing permissions and
+-   limitations under the License.
+-*/
+-
+-package local
+-
+-import (
+-	"os"
+-	"syscall"
+-	"time"
+-)
+-
+-func getATime(fi os.FileInfo) time.Time {
+-	if st, ok := fi.Sys().(*syscall.Stat_t); ok {
+-		return time.Unix(st.Atim.Unix())
+-	}
+-
+-	return fi.ModTime()
+-}
+diff --git a/content/local/store_windows.go b/content/local/store_windows.go
+deleted file mode 100644
+index bce849979..000000000
+--- a/content/local/store_windows.go
++++ /dev/null
+@@ -1,26 +0,0 @@
+-/*
+-   Copyright The containerd Authors.
+-
+-   Licensed under the Apache License, Version 2.0 (the "License");
+-   you may not use this file except in compliance with the License.
+-   You may obtain a copy of the License at
+-
+-       http://www.apache.org/licenses/LICENSE-2.0
+-
+-   Unless required by applicable law or agreed to in writing, software
+-   distributed under the License is distributed on an "AS IS" BASIS,
+-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-   See the License for the specific language governing permissions and
+-   limitations under the License.
+-*/
+-
+-package local
+-
+-import (
+-	"os"
+-	"time"
+-)
+-
+-func getATime(fi os.FileInfo) time.Time {
+-	return fi.ModTime()
+-}

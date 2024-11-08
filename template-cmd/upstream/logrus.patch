@@ -1,0 +1,28 @@
+diff --git a/terminal_check_notappengine.go b/terminal_check_notappengine.go
+index 3293fb3..c6abcd8 100644
+--- a/terminal_check_notappengine.go
++++ b/terminal_check_notappengine.go
+@@ -1,4 +1,5 @@
+-// +build !appengine,!js,!windows,!nacl,!plan9
++//go:build !appengine && !js && !windows && !nacl && !plan9 && !wasip1
++// +build !appengine,!js,!windows,!nacl,!plan9,!wasip1
+
+ package logrus
+
+diff --git a/terminal_check_wasip1.go b/terminal_check_wasip1.go
+index 108a6be..454ff12 100644
+--- a/terminal_check_wasip1.go
++++ b/terminal_check_wasip1.go
+@@ -3,6 +3,12 @@
+
+ package logrus
+
++import "io"
++
+ func isTerminal(fd int) bool {
+ 	return false
+ }
++
++func checkIfTerminal(w io.Writer) bool {
++	return false
++}

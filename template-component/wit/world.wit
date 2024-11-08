@@ -1,0 +1,9 @@
+package cd40:helm;
+
+interface template {
+  execute: func(chart-zip: list<u8>) -> list<string>;
+}
+
+world helm {
+  export template;
+}

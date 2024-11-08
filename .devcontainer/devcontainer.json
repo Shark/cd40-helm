@@ -1,0 +1,44 @@
+{
+  "name": "development",
+  "image": "debian:bookworm",
+  "containerUser": "vscode",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils": {
+      "configureZshAsDefaultShell": true,
+      "username": "vscode",
+      "userUid": 1000,
+      "userGid": 1000
+    },
+    "ghcr.io/devcontainers-contrib/features/pre-commit:2": {},
+    "./features/homebrew": {}
+  },
+  "overrideFeatureInstallOrder": [
+    "ghcr.io/devcontainers/features/common-utils",
+    "./features/homebrew",
+    "ghcr.io/devcontainers-contrib/features/pre-commit:2"
+  ],
+  "containerEnv": {
+    "EDITOR": "code --wait"
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "files.trimTrailingWhitespace": true,
+        "files.trimFinalNewlines": true,
+        "files.insertFinalNewline": true,
+        "workbench.welcomePage.walkthroughs.openOnInstall": false
+      },
+      "extensions": [
+        "golang.go",
+        "rust-lang.rust-analyzer",
+        "gruntfuggly.todo-tree",
+        "mutantdino.resourcemonitor",
+        "redhat.vscode-yaml"
+      ]
+    }
+  },
+  "waitFor": "initializeCommand",
+  "onCreateCommand": ".devcontainer/on-create.sh",
+  "updateContentCommand": ".devcontainer/update-content.sh"
+}
